@@ -1,0 +1,78 @@
+<%- include('partials/header') %>
+
+    <div class="animate-fade-in">
+        <h1>
+            <%= locals.pageTitle || 'Latest Posts' %>
+        </h1>
+
+        <% if (posts.length===0) { %>
+            <div class="post-card" style="text-align: center; padding: 60px;">
+                <h2>No posts found!</h2>
+                <p style="margin-bottom: 20px;">Try searching for something else or create a new post.</p>
+                <a href="/new" class="nav-btn">Create Post</a>
+            </div>
+            <% } else { %>
+                <div class="posts-grid">
+                    <% posts.forEach(post=> { %>
+                        <article class="post-card">
+                            <% if (post.tags && post.tags.length> 0) { %>
+                                <div style="display: flex; gap: 8px; margin-bottom: 12px; flex-wrap: wrap;">
+                                    <% post.tags.forEach(tag=> { %>
+                                        <span class="tag">
+                                            <%= tag %>
+                                        </span>
+                                        <% }) %>
+                                </div>
+                                <% } %>
+
+                                    <a href="/post/<%= post.id %>" style="text-decoration: none; color: inherit;">
+                                        <h2 style="margin-bottom: 8px;">
+                                            <%= post.title %>
+                                        </h2>
+                                    </a>
+
+                                    <div
+                                        style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 16px; display: flex; gap: 12px; flex-wrap: wrap;">
+                                        <span>By <strong>
+                                                <%= post.author %>
+                                            </strong></span>
+                                        <span>•</span>
+                                        <span>
+                                            <%= new Date(post.createdAt || Date.now()).toLocaleDateString() %>
+                                        </span>
+                                        <span>•</span>
+                                        <span>
+                                            <%= post.readingTime || 1 %> min read
+                                        </span>
+                                    </div>
+
+                                    <div class="post-content">
+                                        <%= post.content %>
+                                    </div>
+
+                                    <div
+                                        style="margin-top: 16px; display: flex; justify-content: space-between; align-items: center;">
+                                        <a href="/post/<%= post.id %>"
+                                            style="color: var(--primary); font-weight: 500; text-decoration: none;">Read
+                                            more →</a>
+
+                                        <% if (locals.user && (user.isAdmin || user.name===post.author)) { %>
+                                            <div class="post-actions">
+                                                <a href="/edit/<%= post.id %>" class="btn btn-edit"
+                                                    style="padding: 6px 10px; font-size: 0.8rem;">Edit</a>
+                                                <form action="/delete/<%= post.id %>" method="POST"
+                                                    style="display: inline;">
+                                                    <button type="submit" class="btn btn-delete"
+                                                        style="padding: 6px 10px; font-size: 0.8rem;"
+                                                        onclick="return confirm('Delete this post?')">Delete</button>
+                                                </form>
+                                            </div>
+                                            <% } %>
+                                    </div>
+                        </article>
+                        <% }) %>
+                </div>
+                <% } %>
+    </div>
+
+    <%- include('partials/footer') %>

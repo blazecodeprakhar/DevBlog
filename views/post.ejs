@@ -1,0 +1,63 @@
+<%- include('partials/header') %>
+
+    <article class="container animate-fade-in post-container">
+
+        <header class="post-header">
+            <div class="post-tags-container">
+                <% if (post.tags) { %>
+                    <% post.tags.forEach(tag=> { %>
+                        <span class="tag">
+                            <%= tag %>
+                        </span>
+                        <% }) %>
+                            <% } %>
+            </div>
+
+            <h1 class="post-title">
+                <%= post.title %>
+            </h1>
+
+            <div class="post-meta">
+                <span>By <strong>
+                        <%= post.author %>
+                    </strong></span>
+                <span>•</span>
+                <span>
+                    <%= new Date(post.createdAt).toLocaleDateString() %>
+                </span>
+                <span>•</span>
+                <span>
+                    <%= post.readingTime %> min read
+                </span>
+                <span>•</span>
+                <span>
+                    <%= post.views %> views
+                </span>
+            </div>
+        </header>
+
+        <div class="post-full-content">
+            <%= post.content %>
+        </div>
+
+        <div class="post-footer">
+            <div style="display: flex; gap: 16px;">
+                <a href="/like/<%= post.id %>" class="btn btn-secondary" style="gap: 8px;">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path
+                            d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3">
+                        </path>
+                    </svg>
+                    <%= post.likes %> Likes
+                </a>
+                <% if (locals.user && (user.isAdmin || user.name===post.author)) { %>
+                    <a href="/edit/<%= post.id %>" class="btn btn-edit">Edit</a>
+                    <% } %>
+            </div>
+
+            <a href="/" class="btn btn-primary">Back to Home</a>
+        </div>
+
+    </article>
+
+    <%- include('partials/footer') %>

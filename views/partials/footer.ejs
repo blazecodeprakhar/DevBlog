@@ -1,0 +1,21 @@
+</main>
+<footer>
+    <div class="container">
+        <p>&copy; <%= new Date().getFullYear() %> DevBlog. Built with Node.js, Express & EJS.</p>
+        <div class="watermark" style="margin-top: 12px; font-size: 0.9rem; font-weight: 600;">
+            <a href="https://prakharcodes.netlify.app/" target="_blank"
+                style="color: var(--primary); text-decoration: none;">
+                prakhar.dev
+            </a>
+        </div>
+    </div>
+</footer>
+</footer>
+
+<% if (!locals.user) { %>
+    <%- include('auth-modal') %>
+        <% } %>
+
+            </body>
+
+            </html>

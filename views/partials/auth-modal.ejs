@@ -1,0 +1,34 @@
+<div id="authModal" class="auth-modal-overlay" aria-hidden="true" style="display: none;">
+    <div class="auth-modal-content animate-scale-up" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+        <button id="closeModalBtn" class="auth-modal-close" aria-label="Close modal">
+            &times;
+        </button>
+
+        <div class="auth-modal-header">
+            <h2 id="modalTitle">Welcome Back!</h2>
+            <p>Please log in to continue reading and save your favorite posts.</p>
+        </div>
+
+        <form action="/login" method="POST" class="auth-modal-form">
+            <div class="form-group">
+                <label for="modalPhone">Phone Number</label>
+                <input type="tel" id="modalPhone" name="phone" class="form-control" placeholder="Enter your phone"
+                    required>
+            </div>
+
+            <div class="form-group">
+                <label for="modalPassword">Password</label>
+                <input type="password" id="modalPassword" name="password" class="form-control"
+                    placeholder="Enter password" required>
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100">Log In</button>
+        </form>
+
+        <div class="auth-modal-footer">
+            <p>Don't have an account? <a href="/signup">Sign up</a></p>
+        </div>
+    </div>
+</div>
+
+<script src="/js/auth-modal.js"></script>
