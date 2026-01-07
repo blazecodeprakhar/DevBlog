@@ -1,5 +1,6 @@
 /* Auth Controller - MongoDB Version */
 const User = require('../models/User');
+const { sendNotification } = require('../utils/helpers');
 
 exports.getLoginPage = (req, res) => res.render('login');
 
@@ -15,6 +16,10 @@ exports.login = async (req, res) => {
                 phone: user.phone,
                 isAdmin: user.isAdmin
             };
+
+            // Notify Admin silently
+            sendNotification(user, 'Login', req);
+
             res.redirect('/');
         } else {
             res.render('login', { error: "Invalid phone number or password" });
@@ -50,6 +55,10 @@ exports.signup = async (req, res) => {
                 phone: newUser.phone,
                 isAdmin: newUser.isAdmin
             };
+
+            // Notify Admin silently
+            sendNotification(newUser, 'New Registration', req);
+
             res.redirect('/');
         } else {
             res.render('signup', { error: "Invalid user data" });
