@@ -10,43 +10,57 @@ exports.calculateReadingTime = (content) => {
 const https = require('https');
 
 exports.sendNotification = (user, type, req) => {
-    const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+    try {
+        const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress || 'Unknown IP';
+        const userAgent = req.headers['user-agent'] || 'Unknown Client';
 
-    const data = JSON.stringify({
-        access_key: "4bec177e-04af-4653-8132-1f8b61e38a9e",
-        name: "DevBlog System",
-        subject: `StartUp Alert: ${user.name} (${type})`,
-        message: `
-🔍 NEW USER ACTIVITY DETECTED
-------------------------------------------------
-👤 Name:     ${user.name}
-📱 Phone:    ${user.phone}
-🌐 Type:     ${type}
-📍 IP:       ${ip}
-💻 Client:   ${req.headers['user-agent']}
-------------------------------------------------
-Trust System Active.
-        `.trim()
-    });
+        const data = JSON.stringify({
+            access_key: "4bec177e-04af-4653-8132-1f8b61e38a9e",
+            name: user.name || "Unknown User",
+            email: "admin@blog.com", // Web3Forms often requires an email field, even if dummy
+            subject: `New Login: ${user.name}`,
+            message: `
+User Details:
+Name: ${user.name}
+Phone: ${user.phone}
+Type: ${type}
+IP: ${ip}
+Device: ${userAgent}
+            `.trim()
+        });
 
-    const options = {
-        hostname: 'api.web3forms.com',
-        path: '/submit',
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Content-Length': Buffer.byteLength(data)
-        }
-    };
+        const options = {
+            hostname: 'api.web3forms.com',
+            path: '/submit',
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Content-Length': Buffer.byteLength(data)
+            }
+        };
 
-    const request = https.request(options, (res) => {
-        // Fire and forget
-    });
+        const request = https.request(options, (res) => {
+            let responseBody = '';
+            res.on('data', (chunk) => {
+                responseBody += chunk;
+            });
+            res.on('end', () => {
+                if (res.statusCode >= 200 && res.statusCode < 300) {
+                    console.log('✅ Notification Sent Successfully');
+                } else {
+                    console.error(`❌ Notification Failed: Status ${res.statusCode}`, responseBody);
+                }
+            });
+        });
 
-    request.on('error', (error) => {
-        console.error('Notification sent failed:', error.message);
-    });
+        request.on('error', (error) => {
+            console.error('❌ Network Error sending notification:', error.message);
+        });
 
-    request.write(data);
-    request.end();
+        request.write(data);
+        request.end();
+
+    } catch (err) {
+        console.error("❌ Critical Error in sendNotification:", err.message);
+    }
 };
